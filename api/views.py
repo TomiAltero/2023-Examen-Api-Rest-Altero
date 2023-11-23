@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import HttpResponse
 from .models import Customers, Suppliers, Categories, Products, Orders, Orderdetails, Employees
+from .serializers import OrderDetailSerializer
 
 
 # --- COSTUMERS ------------------------------------------------------------------------------------
@@ -279,6 +280,7 @@ def getEmployeeById(request, pk):
         return Response(status=status.HTTP_200_OK)
 
 # ---------------------------------------- PRUEBAS -------------------------------------------
+
 
 @api_view(["POST"])
 def create_order_with_details(request):
