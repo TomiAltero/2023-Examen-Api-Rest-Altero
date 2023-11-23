@@ -7,7 +7,6 @@ from .models import Customers, Suppliers, Categories, Products, Orders, Orderdet
 from .serializers import OrderDetailSerializer
 
 
-# --- COSTUMERS ------------------------------------------------------------------------------------
 @api_view(["GET", "POST"])
 def getAllCustomers(request):
     if request.method == "GET":
@@ -42,7 +41,11 @@ def getCustomerById(request, pk):
         customer.delete()
         return Response(status=status.HTTP_200_OK)
 
-# --- SUPPLIERS ------------------------------------------------------------------------------------
+
+
+
+
+
 @api_view(["GET", "POST"])
 def getAllSuppliers(request):
     if request.method == "GET":         
@@ -77,7 +80,11 @@ def getSupplierById(request, pk):
         supplier.delete()
         return Response(status=status.HTTP_200_OK)
 
-# --- CATEGORIES ------------------------------------------------------------------------------------
+
+
+
+
+
 @api_view(["GET", "POST"])
 def getAllCategories(request):
     if request.method == "GET":         
@@ -112,7 +119,11 @@ def getCategoryById(request, pk):
         categorie.delete()
         return Response(status=status.HTTP_200_OK)
 
-# --- PRODUCTS ------------------------------------------------------------------------------------
+
+
+
+
+
 @api_view(["GET", "POST"])
 def getAllProducts(request):
     if request.method == "GET":         
@@ -149,7 +160,10 @@ def getProductById(request, pk):
         product.delete()
         return Response(status=status.HTTP_200_OK)
 
-# --- ORDERS ------------------------------------------------------------------------------------
+
+
+
+
 
 @api_view(["GET", "POST"])
 def getAllOrders(request):
@@ -187,7 +201,10 @@ def getOrderById(request, pk):
         order.delete()
         return Response(status=status.HTTP_200_OK)
 
-# --- ORDER_DETAILS ------------------------------------------------------------------------------------
+
+
+
+
 
 @api_view(["GET", "POST"])
 def getAllOrderDetails(request):
@@ -225,7 +242,10 @@ def getOrderDetailById(request, pk):
         order_detail.delete()
         return Response(status=status.HTTP_200_OK)
 
-# --- EMPLOYEES ------------------------------------------------------------------------------------
+
+
+
+
 
 @api_view(["GET", "POST"])
 def getAllEmployees(request):
@@ -279,8 +299,11 @@ def getEmployeeById(request, pk):
         employee.delete()
         return Response(status=status.HTTP_200_OK)
 
-# ---------------------------------------- PRUEBAS -------------------------------------------
 
+
+
+
+#TESTS
 
 @api_view(["POST"])
 def create_order_with_details(request):
