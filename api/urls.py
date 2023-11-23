@@ -22,7 +22,5 @@ urlpatterns = [
 
     path("employee/", getAllEmployees, name="getAllEmployees"),
     path("employee/<str:pk>/", getEmployeeById, name="getEmployeeById"),
-
-    path("test_customer/", get_customers_start_with_d, name="getAllCustomers"),
     
     ]
