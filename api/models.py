@@ -105,6 +105,7 @@ class Orderdetails(models.Model):
         unique_together = (('orderid', 'productid'),)
 
 
+
 class Orders(models.Model):
     orderid = models.AutoField(db_column='OrderID', primary_key=True)  
     customerid = models.ForeignKey(Customers, models.DO_NOTHING, db_column='CustomerID', blank=True, null=True)  

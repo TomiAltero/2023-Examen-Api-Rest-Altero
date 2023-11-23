@@ -2,9 +2,9 @@ from .serializers import *
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from django.http import HttpResponse
-from .models import Customers, Suppliers, Categories, Products, Orders, Orderdetails, Employees
-from django.db.models import Q
+from django.http import HttpResponse, JsonResponse
+from .models import Customers, Suppliers, Categories, Products, Orders, Orderdetails, Employees, Shippers
+from django.db.models import *
 
 
 @api_view(["GET", "POST"])
@@ -301,5 +301,72 @@ def getEmployeeById(request, pk):
 
 
 
+
+@api_view(['GET'])
+def get_productos(request):
+    supplier_id = request.GET.get('supplierid')
+    category_id = request.GET.get('categoryid')
+    stock_min = request.GET.get('stockmin')
+
+    try:
+        supplier = Suppliers.objects.get(pk=supplier_id)
+        category = Categories.objects.get(pk=category_id)
+    except:
+        return JsonResponse({'error': 'El proveedor/categoria no existe'}, status=404)
+
+    try:
+        stock_min = int(stock_min)
+    except ValueError:
+        return JsonResponse({'error': 'la cantidad de stock debe ser un numero valido'}, status=400)
+
+    productos = Products.objects.filter(supplier=supplier, category=category).exclude(discontinued=1)
+    productos = productos.annotate(stock_futuro=F('unitsinstock') + F('unitsonorder')).filter(stock_futuro__lt=stock_min)
+    productos = productos.order_by('stock_futuro')
+
+    if not productos:
+        return JsonResponse({'message': 'Los productos no cumplen con la condicion'}, status=204)
+
+    serializer = ProductSerializer(productos, many=True)
+    return JsonResponse(serializer.data, safe=False, status=200)
+
+
+
+@api_view(['POST', 'PUT'])
+def create_order(request):
+    supplier_id = request.data.get('supplierid')
+    category_id = request.data.get('categoryid')
+    stock_required = request.data.get('stockrequired')
+    customer_id = request.data.get('customerid')
+    employee_id = request.data.get('employeeid')
+    shipper_id = request.data.get('shipperid')
+
+    try:
+        supplier = Suppliers.objects.get(pk=supplier_id)
+        category = Categories.objects.get(pk=category_id)
+        customer = Customers.objects.get(pk=customer_id)
+        employee = Employees.objects.get(pk=employee_id)
+        shipper = Shippers.objects.get(pk=shipper_id)
+    except:
+        return JsonResponse({'error': 'No se encontraron los datos :('}, status=404)
+
+    productos = Products.objects.filter(supplier=supplier, category=category).exclude(discontinued=1)
+    productos = productos.annotate(stock_futuro=F('unitsinstock') + F('unitsonorder')).filter(stock_futuro__lt=stock_required)
+
+    if not productos:
+        return JsonResponse({'message': 'Los productos no cumplen con la condicion'}, status=204)
+
+    order = Orders.objects.create(customer=customer, employee=employee, shipper=shipper)
+    for product in productos:
+        quantity = stock_required - product.unitsinstock - product.unitsonorder
+
+        if quantity >= 100:
+            discount = 0.10
+        else:
+            discount = 0
+
+        Orderdetails.objects.create(order=order, product=product, unitprice=product.unitprice, quantity=quantity, discount=discount)
+
+    serializer = OrderSerializer(order)
+    return JsonResponse(serializer.data, safe=False, status=200)
 
 

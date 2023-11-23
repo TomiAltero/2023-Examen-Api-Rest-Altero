@@ -23,4 +23,7 @@ urlpatterns = [
     path("employee/", getAllEmployees, name="getAllEmployees"),
     path("employee/<str:pk>/", getEmployeeById, name="getEmployeeById"),
     
+    path('productos_ejercicio', get_productos, name='get_productos'),
+    path("generar_orden", create_order, name = "generar_orden")
+
     ]
